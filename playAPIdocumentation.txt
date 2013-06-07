@@ -1,0 +1,195 @@
+play API - James0x57
+
+======================================
+===           Events              ====
+======================================
+
+play will produce 2 os events that you can watch for:
+1) playStarted
+2) playEnded
+
+They're queued directly before the song starts playing and directly after a song is stopped (or ends).
+If the repeat mode is anything other than "None", then playStarted will get queued very quickly after playEnded.
+
+
+======================================
+===Useful functions in the Play API===
+======================================
+
+-------------------------
+play.mountIronNoteblock()
+-------------------------
+Does:
+	* Connects to the first detected iron note block adjecent to the computer
+	* will also connect to the iron note block peripheral on a turtle
+
+Returns:
+	* The side of the connected note block, or nil if not found
+
+Notes:
+	* THIS HAPPENS AUTOMATICALLY, but you can call it again if needed
+
+
+-------------------------
+play.current()
+-------------------------
+Returns:
+	* The table of the currently selected song with all of the info
+	* These are the most useful of the attributes returned in this table:
+		.index 		-- index of itself in the menu
+		.name 		-- name of the song
+		.author		-- noteblock studio song author
+		.originalAuthor -- author of the original song
+		.description 	-- a description of the song provided by the nbs author
+
+Notes:
+	* This returns nil if there is no song playing. (so you can use this to check if there is one playing)
+
+
+-------------------------
+play.changeRepeatMode()
+-------------------------
+Does:
+	* Cycles through the repeat mode options
+
+Returns:
+	* The name of the now selected repeat mode
+
+
+-------------------------
+play.getRepeatMode()
+-------------------------
+Returns:
+	* The name of the currently selected repeat mode
+
+Notes:
+	* The Possible return values are:
+		"All (Random)"
+		"All (In Order)"
+		"One (Loop Song)"
+		"None"
+
+
+-------------------------
+play.clearMenu()
+-------------------------
+Does:
+	* Sets the menu list back to empty table
+
+Notes:
+	* No songs can be started without having an entry in the menu list (table)
+
+
+-------------------------
+play.loadMenu(fromDir)
+-------------------------
+Takes:
+	* a string pointing to a directory
+
+Does:
+	* ADDS nbs files from the directory into the menu list
+
+Returns:
+	* the current length of the menu
+
+
+
+-------------------------
+play.menuTable()
+-------------------------
+Returns:
+	* the menu list of songs
+
+Notes:
+	* each item in the table is a table formatted like so: { d= directory; fn= fileName }
+	* The length of the current menu list can be read with the hash-sign prefix: #play.menuTable()
+
+
+-------------------------
+play.menuAt(index)
+-------------------------
+Takes: 
+	* A valid index of a song from the menu list
+
+Does:
+	* Stops playing the currently playing song if there is one
+	* Loads all of the song information into the current song
+	* sets a ready flag that lets playNotes know it can start playing
+
+Notes:
+	* If play.playNotes is running in parallel when this is called, the new song will automatically start
+
+
+-------------------------
+play.playNotes(doReturn)
+-------------------------
+Takes:
+	* A boolean that determines if this function will return when a song is done or not
+
+Does:
+	* Plays the song using the connected iron noteblock
+
+Notes:
+	* can run in a parallel thread (pass in false as the paramater), 
+		it will watch for song changing and stopping automatically.
+		this NEVER RETURNS once it starts in this mode, instead it 
+		just waits for instructions and/or continues playing songs 
+		based on the currently selected "repeat mode"
+	* can be called to play just the current song directly (pass in true as the paramater),
+		it will return when the song finishes on its own
+
+
+-------------------------
+play.stopSong()
+-------------------------
+Does:
+	* Stops the currently playing song, or nothing if no song is playing
+
+
+-------------------------
+play.skipSong()
+-------------------------
+Does:
+	* Plays the next song with consideration to the current "repeat mode" selected
+
+Notes:
+	* if repeat mode is "None", then this just stops the song that's playing
+	* if repeat mode is "All (Random)", then it picks a random song from the menu list to play
+	* if repeat mode is "All (In Order)", then it would play the very next song in the menu
+	* if repeat mode is "One (Loop Song)", then it will start the song over
+
+
+-------------------------
+play.continueWith()
+-------------------------
+Returns:
+	* a menu index of a possible next song based on the selected repeat mode
+
+Notes:
+	* Should not be used if there are no songs in the menu list
+	* Should not be used if the current repeat mode is "None" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
